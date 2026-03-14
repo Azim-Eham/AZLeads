@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
@@ -9,6 +9,15 @@ import { AvailableLeads } from './pages/AvailableLeads';
 import { MyLeads } from './pages/MyLeads';
 import { Credits } from './pages/Credits';
 import { Profile } from './pages/Profile';
+
+const RootBoundary = () => {
+  const location = useLocation();
+  // If Supabase redirects to the Site URL with a recovery token, catch it here
+  if (location.hash.includes('type=recovery')) {
+    return <Navigate to={`/reset-password${location.hash}`} replace />;
+  }
+  return <Navigate to="/login" replace />;
+};
 
 function App() {
   return (
@@ -34,7 +43,7 @@ function App() {
           <Route path="profile" element={<Profile />} />
         </Route>
         
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<RootBoundary />} />
       </Routes>
     </BrowserRouter>
   );

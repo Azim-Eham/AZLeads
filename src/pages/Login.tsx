@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 
@@ -9,6 +9,13 @@ export const Login = () => {
     
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    // If Supabase redirects here directly with a recovery token
+    useEffect(() => {
+        if (window.location.hash.includes('type=recovery')) {
+            navigate(`/reset-password${window.location.hash}`);
+        }
+    }, [navigate]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
